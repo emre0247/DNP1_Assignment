@@ -35,7 +35,7 @@ public class UserInMemoryRepository : IUserRepository
         }
 
         users.Remove(existingUser);
-        users.Add(existingUser);
+        users.Add(user);
         return Task.CompletedTask;
     }
 
