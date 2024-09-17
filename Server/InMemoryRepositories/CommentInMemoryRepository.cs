@@ -9,7 +9,13 @@ public class CommentInMemoryRepository : ICommentRepository
 
     public CommentInMemoryRepository()
     {
-        comments = new List<Comment>();
+        comments = new List<Comment>
+        {
+            new Comment {Body = "I like this post", Id = 1, PostId = 1, UserId = 1},
+            new Comment {Body = "I like this post", Id = 2, PostId = 2, UserId = 2},
+            new Comment {Body = "I like this post", Id = 3, PostId = 3, UserId = 3},
+            new Comment {Body = "I like this post", Id = 4, PostId = 4, UserId = 4},
+        };
     }
     public Task<Comment> AddAsync(Comment comment)
     {

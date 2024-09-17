@@ -9,7 +9,13 @@ public class PostInMemoryRepository : IPostRepository
 
     public PostInMemoryRepository()
     {
-        posts = new List<Post>();
+        posts = new List<Post>
+        {
+            new Post {Body = "Some text here", Id = 1,Title = "Title 1", UserId = 1},
+            new Post {Body = "Some text here", Id = 2,Title = "Title 2", UserId = 2},
+            new Post {Body = "Some text here", Id = 3,Title = "Title 3", UserId = 3},
+            new Post {Body = "Some text here", Id = 4,Title = "Title 4", UserId = 4}
+        };
     }
 
     public Task<Post> AddAsync(Post post)
