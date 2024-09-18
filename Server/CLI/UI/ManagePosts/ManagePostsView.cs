@@ -10,4 +10,16 @@ public class ManagePostsView
     {
         this._postRepository = postRepository;
     }
+
+    public async Task UpdatePostAsync(int postId, string newTitle, string newContent)
+    {
+        var post = await _postRepository.GetSingleAsync(postId);
+        
+        post.Title = newTitle;
+        post.Body = newContent;
+        
+        await _postRepository.UpdateAsync(post);
+        
+        Console.WriteLine($"Updated post {post.Id}.");
+    }
 }

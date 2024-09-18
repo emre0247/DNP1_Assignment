@@ -10,4 +10,21 @@ public class ListPostsView
     {
         this.postRepository = postRepository;
     }
+
+    public void ListPosts()
+    {
+        var posts = postRepository.GetMany();
+
+        if (!posts.Any())
+        {
+            Console.WriteLine("There are no posts");
+            return;
+        }
+        
+        Console.WriteLine("Listing all posts...");
+        foreach (var element in posts)
+        {
+            Console.WriteLine($"Title: {element.Title}, Body: {element.Body}, ID: {element.Id}, Author: {element.UserId}");
+        }
+    }
 }

@@ -10,4 +10,9 @@ public class ManageUsersView
     {
         this.userRepository = userRepository;
     }
+
+    public async Task UpdateUserAsync(string username, string password)
+    {
+        
+    }
 }
