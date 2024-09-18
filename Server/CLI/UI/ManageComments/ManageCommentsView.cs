@@ -1,3 +1,4 @@
+using Entities;
 using RepositoryContracts;
 
 namespace CLI.UI.ManageComments;

@@ -11,8 +11,18 @@ public class ManageUsersView
         this.userRepository = userRepository;
     }
 
-    public async Task UpdateUserAsync(string username, string password)
+    public async Task UpdateUserAsync(string username, string password, int id)
     {
+        var userToChange = await userRepository.GetByIdAsync(id);
+
+        string oldUsername = userToChange.Username;
+        string oldPassword = userToChange.Password;
         
+        userToChange.Username = username;
+        userToChange.Password = password;
+        
+        await userRepository.UpdateAsync(userToChange);
+        
+        Console.WriteLine($"User {oldUsername} was updated to {userToChange.Username} with password {oldPassword} to {userToChange.Password}.");
     }
 }

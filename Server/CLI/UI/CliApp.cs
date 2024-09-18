@@ -137,7 +137,23 @@ public class CliApp
                     break;
                 
                 case "9":
+                    Console.WriteLine("Enter User Name: ");
+                    string userNameToChange = Console.ReadLine();
                     
+                    Console.WriteLine("Enter Password: ");
+                    string passwordToChange = Console.ReadLine();
+                    
+                    Console.WriteLine("Enter User ID: ");
+                    int userIdToChange = int.Parse(Console.ReadLine());
+                    
+                    await manageUsersView.UpdateUserAsync(userNameToChange, passwordToChange, userIdToChange);
+                    break;
+                
+                case "10":
+                    running = false;
+                    break;
+                default:
+                    Console.WriteLine("Invalid option");
                     break;
             }
         }
