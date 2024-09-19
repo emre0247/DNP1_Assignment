@@ -61,7 +61,8 @@ public class CliApp
             Console.WriteLine("7. Update Post");
             Console.WriteLine("8. Update Comment");
             Console.WriteLine("9. Update User");
-            Console.WriteLine("10. Exit");
+            Console.WriteLine("10. Get Single Post");
+            Console.WriteLine("11. Exit");
             
             string option = Console.ReadLine();
 
@@ -150,6 +151,13 @@ public class CliApp
                     break;
                 
                 case "10":
+                    Console.WriteLine("Enter Post Id: ");
+                    int postIdToGet = int.Parse(Console.ReadLine());
+
+                    await singlePostView.GetSinglePost(postIdToGet);
+                    break;
+                
+                case "11":
                     running = false;
                     break;
                 default:
