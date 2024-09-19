@@ -21,7 +21,7 @@ public class CreatePostView
         }
         
         // We create the post
-        var postToCreate = new Post
+        Post postToCreate = new Post
         {
             Title = title,
             Body = body,

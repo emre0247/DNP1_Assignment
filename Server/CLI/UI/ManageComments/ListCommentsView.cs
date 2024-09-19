@@ -1,3 +1,4 @@
+using Entities;
 using RepositoryContracts;
 
 namespace CLI.UI.ManageComments;
@@ -13,7 +14,7 @@ public class ListCommentsView
 
     public void ListComments()
     {
-        var comments = commentRepository.GetMany();
+        IQueryable<Comment> comments = commentRepository.GetMany();
 
         if (!comments.Any())
         {

@@ -1,3 +1,4 @@
+using Entities;
 using RepositoryContracts;
 
 namespace CLI.UI.ManagePosts;
@@ -13,7 +14,7 @@ public class ListPostsView
 
     public void ListPosts()
     {
-        var posts = postRepository.GetMany();
+        IQueryable<Post> posts = postRepository.GetMany();
 
         if (!posts.Any())
         {

@@ -21,7 +21,7 @@ public class CreateCommentView
         }
         
         
-        var creatingComment = new Comment
+        Comment creatingComment = new Comment
         {
             Body = body,
             PostId = postId,

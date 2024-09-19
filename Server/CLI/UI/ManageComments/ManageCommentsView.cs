@@ -14,7 +14,7 @@ public class ManageCommentsView
 
     public async Task UpdateCommentAsync(string body, int commentId)
     {
-        var comment = await commentRepository.GetSingleAsync(commentId);
+        Comment comment = await commentRepository.GetSingleAsync(commentId);
         
         comment.Body = body;
         await commentRepository.UpdateAsync(comment);

@@ -1,3 +1,4 @@
+using Entities;
 using RepositoryContracts;
 
 namespace CLI.UI.ManagePosts;
@@ -13,7 +14,7 @@ public class ManagePostsView
 
     public async Task UpdatePostAsync(int postId, string newTitle, string newContent)
     {
-        var post = await _postRepository.GetSingleAsync(postId);
+        Post post = await _postRepository.GetSingleAsync(postId);
         
         post.Title = newTitle;
         post.Body = newContent;
