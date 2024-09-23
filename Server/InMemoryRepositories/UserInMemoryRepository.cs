@@ -70,7 +70,7 @@ public class UserInMemoryRepository : IUserRepository
         if (userToGet is null)
         {
             throw new InvalidOperationException(
-                $"Post with ID '{id}' not found");
+                $"User with ID '{id}' not found");
         }
         return Task.FromResult(userToGet);
     }

@@ -5,22 +5,49 @@ namespace CLI.UI.ManagePosts;
 
 public class ManagePostsView
 {
-    private readonly IPostRepository _postRepository;
+    
+    private readonly CreatePostView createPostView;
+    private readonly ListPostsView listPostsView;
+    private readonly SinglePostView singlePostView;
 
-    public ManagePostsView(IPostRepository postRepository)
+    public ManagePostsView(CreatePostView createPostView, ListPostsView listPostsView, SinglePostView singlePostView)
     {
-        this._postRepository = postRepository;
+        this.createPostView = createPostView;
+        this.listPostsView = listPostsView;
+        this.singlePostView = singlePostView;
     }
 
-    public async Task UpdatePostAsync(int postId, string newTitle, string newContent)
+    public async Task ShowManagePostsAsync()
     {
-        Post post = await _postRepository.GetSingleAsync(postId);
-        
-        post.Title = newTitle;
-        post.Body = newContent;
-        
-        await _postRepository.UpdateAsync(post);
-        
-        Console.WriteLine($"Updated post {post.Id}.");
+        bool running = true;
+        while (running)
+        {
+            Console.WriteLine("You selected Manage Posts");
+            Console.WriteLine("-------------------------");
+            Console.WriteLine("Please choose an option: ");
+            Console.WriteLine("1. Create a post (Type 'Create')");
+            Console.WriteLine("2. List all posts (Type 'List')");
+            Console.WriteLine("3. List single posts (Type 'Single')");
+            //More to come...
+            
+            string input = Console.ReadLine().ToLower();
+            switch (input)
+            {
+                case "create":
+                    await createPostView.AddPostAsync();
+                    break;
+                
+                case "list":
+                    listPostsView.ListPosts();
+                    break;
+                
+                case "single":
+                    await singlePostView.GetSinglePost();
+                    break;
+            }
+            
+        }
     }
+
+    
 }

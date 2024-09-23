@@ -12,8 +12,9 @@ public class SinglePostView
         this.postRepository = postRepository;
     }
 
-    public async Task<Post> GetSinglePost(int postId)
+    public async Task<Post> GetSinglePost()
     {
+        int postId = 0;
         Post? postToGet = await postRepository.GetSingleAsync(postId);
         if (postToGet is null)
         {

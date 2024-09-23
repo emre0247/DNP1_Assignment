@@ -8,163 +8,57 @@ namespace CLI.UI;
 
 public class CliApp
 {
-    private readonly IUserRepository userRepository;
-    private readonly ICommentRepository commentRepository;
-    private readonly IPostRepository postRepository;
+    
 
-    private readonly CreatePostView createPostView;
-    private readonly ListPostsView listPostsView;
-    private readonly ManagePostsView managePostsView;
-    private readonly SinglePostView singlePostView;
-    
-    private readonly CreateUserView createUserView;
-    private readonly ListUsersView listUsersView;
-    private readonly ManageUsersView manageUsersView;
-    
-    private readonly CreateCommentView createCommentView;
-    private readonly ListCommentsView listCommentsView;
-    private readonly ManageCommentsView manageCommentsView;
+    //private readonly ManagePostsView managePostsView = new ManagePostsView();
+    private readonly IUserRepository userRepository;
+    private readonly IPostRepository postRepository;
+    private readonly ICommentRepository commentRepository;
     
     public CliApp(IUserRepository userRepository, ICommentRepository commentRepository, IPostRepository postRepository)
     {
         this.userRepository = userRepository;
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
-
-        createPostView = new CreatePostView(this.postRepository);
-        listPostsView = new ListPostsView(this.postRepository);
-        managePostsView = new ManagePostsView(this.postRepository);
-        singlePostView = new SinglePostView(this.postRepository);
-        
-        createUserView = new CreateUserView(this.userRepository);
-        listUsersView = new ListUsersView(this.userRepository);
-        manageUsersView = new ManageUsersView(this.userRepository);
-
-        createCommentView = new CreateCommentView(this.commentRepository);
-        manageCommentsView = new ManageCommentsView(this.commentRepository);
-        listCommentsView = new ListCommentsView(this.commentRepository);
     }
 
     public async Task StartAsync()
     {
+        Console.WriteLine("Starting CLI App... ");
+        await OptionBasedView();
+    }
+
+    private async Task OptionBasedView()
+    {
         bool running = true;
         while (running)
         {
-            Console.WriteLine("Choose an option:");
-            Console.WriteLine("1. Add User");
-            Console.WriteLine("2. Add Post");
-            Console.WriteLine("3. Add Comment");
-            
-            Console.WriteLine("4. View Users");
-            Console.WriteLine("5. View Posts");
-            Console.WriteLine("6. View Comments");
-            Console.WriteLine("7. Update Post");
-            Console.WriteLine("8. Update Comment");
-            Console.WriteLine("9. Update User");
-            Console.WriteLine("10. Get Single Post");
-            Console.WriteLine("11. Exit");
-            
-            string option = Console.ReadLine();
-
-            switch (option)
+        Console.WriteLine("Welcome to the Application!");
+        Console.WriteLine("---------------------------");
+        Console.WriteLine("Please choose an option: ");
+        Console.WriteLine("1. Manage Posts (Type 'post')");
+        Console.WriteLine("2. Manage Comments (Type 'comment')");
+        Console.WriteLine("3. Manage Users (Type 'user')");
+        Console.WriteLine("To exit the application, type 'exit'.");
+        Console.WriteLine("Your choice: ");
+        string operation = Console.ReadLine().ToLower();
+        
+            switch (operation)
             {
-                case "1":
-                    Console.WriteLine("Enter User Name: ");
-                    string userName = Console.ReadLine();
-                    
-                    Console.WriteLine("Enter Password: ");
-                    string password = Console.ReadLine();
-                    createUserView.AddUserAsync(userName, password);
-                    break;
-                
-                case "2":
-                    Console.WriteLine("Enter Post Title: ");
-                    string postTitle = Console.ReadLine();
-                    
-                    Console.WriteLine("Enter Post Content: ");
-                    string postContent = Console.ReadLine();
-                    
-                    Console.WriteLine("Enter User Id");
-                    int userId = int.Parse(Console.ReadLine());
-                    
-                    createPostView.AddPostAsync(postTitle, postContent, userId);
-                    break;
-                
-                case "3":
-                    Console.WriteLine("Enter Comment Content: ");
-                    string commentContent = Console.ReadLine();
-                    
-                    Console.WriteLine("Enter Post Id: ");
-                    int postId = int.Parse(Console.ReadLine());
-                    
-                    Console.WriteLine("Enter User Id: ");
-                    int userID = int.Parse(Console.ReadLine());
-                    
-                    createCommentView.AddCommentAsync(commentContent, postId, userID);
-                    break;
-                
-                case "4":
-                    listUsersView.ListUsers();
-                    break;
-                
-                case "5":
-                    listPostsView.ListPosts();
-                    break;
-                
-                case "6":
-                    listCommentsView.ListComments();
-                    break;
-                
-                case "7": 
-                    Console.WriteLine("Enter Post Title: ");
-                    string title = Console.ReadLine();
-                    
-                    Console.WriteLine("Enter Post Content: ");
-                    string postContent1 = Console.ReadLine();
-                    
-                    Console.WriteLine("Enter Post Id: ");
-                    int postIds = int.Parse(Console.ReadLine());
-                    await managePostsView.UpdatePostAsync(postIds, title, postContent1 );
-                    break;
-                
-                case "8":
-                    Console.WriteLine("Enter Comment Body: ");
-                    string s1 = Console.ReadLine();
-                    
-                    Console.WriteLine("Enter Comment Id: ");
-                    int commentId = int.Parse(Console.ReadLine());
-
-                    await manageCommentsView.UpdateCommentAsync(s1, commentId);
-                    break;
-                
-                case "9":
-                    Console.WriteLine("Enter User Name: ");
-                    string userNameToChange = Console.ReadLine();
-                    
-                    Console.WriteLine("Enter Password: ");
-                    string passwordToChange = Console.ReadLine();
-                    
-                    Console.WriteLine("Enter User ID: ");
-                    int userIdToChange = int.Parse(Console.ReadLine());
-                    
-                    await manageUsersView.UpdateUserAsync(userNameToChange, passwordToChange, userIdToChange);
-                    break;
-                
-                case "10":
-                    Console.WriteLine("Enter Post Id: ");
-                    int postIdToGet = int.Parse(Console.ReadLine());
-
-                    await singlePostView.GetSinglePost(postIdToGet);
-                    break;
-                
-                case "11":
-                    running = false;
-                    break;
-                default:
-                    Console.WriteLine("Invalid option");
+                case "post":
+                    await ManagePostsAsync();
                     break;
             }
         }
-        Console.WriteLine("");
+    }
+
+    private async Task ManagePostsAsync()
+    {
+        CreatePostView createPostView = new CreatePostView(postRepository, userRepository);
+        ListPostsView listPostsView = new ListPostsView(postRepository);
+        SinglePostView singlePostView = new SinglePostView(postRepository);
+        
+        ManagePostsView managePostsView = new ManagePostsView(createPostView, listPostsView, singlePostView);
+        await managePostsView.ShowManagePostsAsync();
     }
 }
