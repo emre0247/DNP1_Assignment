@@ -12,7 +12,7 @@ public class ListPostsView
         this.postRepository = postRepository;
     }
 
-    public void ListPosts()
+    public async Task ListPosts()
     {
         IQueryable<Post> posts = postRepository.GetMany();
 
@@ -27,5 +27,6 @@ public class ListPostsView
         {
             Console.WriteLine($"Title: {element.Title}, Body: {element.Body}, ID: {element.Id}, Author: {element.UserId}");
         }
+        
     }
 }

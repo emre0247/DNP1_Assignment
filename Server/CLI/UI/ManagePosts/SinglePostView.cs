@@ -12,15 +12,28 @@ public class SinglePostView
         this.postRepository = postRepository;
     }
 
-    public async Task<Post> GetSinglePost()
+    public async Task GetSinglePost()
     {
-        int postId = 0;
-        Post? postToGet = await postRepository.GetSingleAsync(postId);
-        if (postToGet is null)
+        Console.WriteLine("Getting single post...");
+        Console.WriteLine("-------------------------");
+        while (true)
         {
-            Console.Error.WriteLine($"No post found with id {postId}");
+            Console.WriteLine("Enter post id: ");
+            int postId = int.Parse(Console.ReadLine());
+        
+            Post? postToGet = await postRepository.GetSingleAsync(postId);
+            
+            if (postToGet is null)
+            {
+                Console.WriteLine($"No post found with id {postId}");
+                Console.WriteLine("Try again");
+            }
+            else
+            {
+                Console.WriteLine($"Post Body: {postToGet.Body} - Post Id: {postToGet.Id} - Post Title: {postToGet.Title}");
+                break;
+            }
+            
         }
-        Console.WriteLine($"Post Body: {postToGet.Body} - Post Id: {postToGet.Id} - Post Title: {postToGet.Title}");
-        return postToGet;
     }
 }

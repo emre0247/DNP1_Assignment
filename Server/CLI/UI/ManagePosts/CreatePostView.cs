@@ -8,6 +8,7 @@ public class CreatePostView
     private readonly IPostRepository postRepository;
     
     private readonly IUserRepository userRepository;
+    
 
     public CreatePostView(IPostRepository postRepository, IUserRepository userRepository)
     {

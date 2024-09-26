@@ -39,16 +39,28 @@ public class CommentFileRepository : ICommentRepository
             throw new InvalidOperationException(
                 $"Post with ID '{comment.Id}' not found");
         }
-
+        
         comments.Remove(existingComment);
         comments.Add(existingComment);
         commentAsJson = JsonSerializer.Serialize(comments);
         await File.WriteAllTextAsync(filePath, commentAsJson);
     }
 
-    public Task DeleteAsync(int id)
+    public async Task DeleteAsync(int id)
     {
-        throw new NotImplementedException();
+        string commentAsJson = File.ReadAllText(filePath);
+        List<Comment> comments = JsonSerializer.Deserialize<List<Comment>>(commentAsJson)!;
+        Comment? commentToDelete = comments.SingleOrDefault(p => p.Id == id);
+        
+        if (commentToDelete is null)
+        {
+            throw new InvalidOperationException(
+                $"Post with ID '{id}' not found"); // Exception message includes the ID for context.
+        }
+
+        comments.Remove(commentToDelete);
+        commentAsJson = JsonSerializer.Serialize(comments);
+        await File.WriteAllTextAsync(filePath, commentAsJson);
     }
 
     public Task<Comment> GetSingleAsync(int id)

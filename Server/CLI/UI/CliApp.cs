@@ -57,8 +57,8 @@ public class CliApp
         CreatePostView createPostView = new CreatePostView(postRepository, userRepository);
         ListPostsView listPostsView = new ListPostsView(postRepository);
         SinglePostView singlePostView = new SinglePostView(postRepository);
-        
-        ManagePostsView managePostsView = new ManagePostsView(createPostView, listPostsView, singlePostView);
+        UpdatePostView updatePostView = new UpdatePostView(postRepository);
+        ManagePostsView managePostsView = new ManagePostsView(createPostView, listPostsView, singlePostView, updatePostView);
         await managePostsView.ShowManagePostsAsync();
     }
 }
