@@ -41,7 +41,7 @@ public class CommentFileRepository : ICommentRepository
         }
         
         comments.Remove(existingComment);
-        comments.Add(existingComment);
+        comments.Add(comment);
         commentAsJson = JsonSerializer.Serialize(comments);
         await File.WriteAllTextAsync(filePath, commentAsJson);
     }

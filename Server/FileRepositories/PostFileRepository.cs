@@ -40,7 +40,7 @@ public class PostFileRepository : IPostRepository
         }
         
         posts.Remove(existingPost);
-        posts.Add(existingPost);
+        posts.Add(post);
         postAsJson = JsonSerializer.Serialize(posts);
         await File.WriteAllTextAsync(filePath, postAsJson);
     }
