@@ -37,7 +37,7 @@ public class CommentFileRepository : ICommentRepository
         if (existingComment is null)
         {
             throw new InvalidOperationException(
-                $"Post with ID '{comment.Id}' not found");
+                $"Comment with ID '{comment.Id}' not found");
         }
         
         comments.Remove(existingComment);
@@ -48,14 +48,14 @@ public class CommentFileRepository : ICommentRepository
 
     public async Task DeleteAsync(int id)
     {
-        string commentAsJson = File.ReadAllText(filePath);
+        string commentAsJson = await File.ReadAllTextAsync(filePath);
         List<Comment> comments = JsonSerializer.Deserialize<List<Comment>>(commentAsJson)!;
         Comment? commentToDelete = comments.SingleOrDefault(p => p.Id == id);
         
         if (commentToDelete is null)
         {
             throw new InvalidOperationException(
-                $"Post with ID '{id}' not found"); // Exception message includes the ID for context.
+                $"Comment with ID '{id}' not found");
         }
 
         comments.Remove(commentToDelete);
@@ -63,13 +63,28 @@ public class CommentFileRepository : ICommentRepository
         await File.WriteAllTextAsync(filePath, commentAsJson);
     }
 
-    public Task<Comment> GetSingleAsync(int id)
+    public async Task<Comment> GetSingleAsync(int id)
     {
-        throw new NotImplementedException();
+        string commentAsJson = await File.ReadAllTextAsync(filePath);
+        List<Comment> comments = JsonSerializer.Deserialize<List<Comment>>(commentAsJson)!;
+        Comment? comment = comments.SingleOrDefault(p => p.Id == id);
+
+        if (comment is null)
+        {
+            throw new InvalidOperationException(
+                $"Comment with ID '{id}' not found");
+        }
+        
+        commentAsJson = JsonSerializer.Serialize(comments);
+        await File.WriteAllTextAsync(filePath, commentAsJson);
+
+        return comment;
     }
 
     public IQueryable<Comment> GetMany()
     {
-        throw new NotImplementedException();
+        string commentAsJson = File.ReadAllTextAsync(filePath).Result;
+        List<Comment> comments = JsonSerializer.Deserialize<List<Comment>>(commentAsJson)!;
+        return comments.AsQueryable();
     }
 }
