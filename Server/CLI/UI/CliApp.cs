@@ -63,7 +63,8 @@ public class CliApp
     {
         CreateUserView createUserView = new CreateUserView(userRepository);
         ListUsersView listUsersView = new ListUsersView(userRepository);
-        ManageUsersView manageUsersView = new ManageUsersView(createUserView, listUsersView);
+        SingleUserView singleUserView = new SingleUserView(userRepository);
+        ManageUsersView manageUsersView = new ManageUsersView(createUserView, listUsersView, singleUserView);
         await manageUsersView.ShowManageUserAsync();
     }
 

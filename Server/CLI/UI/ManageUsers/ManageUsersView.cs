@@ -6,11 +6,13 @@ public class ManageUsersView
 {
     private readonly CreateUserView createUserView;
     private readonly ListUsersView listUsersView;
+    private readonly SingleUserView singleUserView;
 
-    public ManageUsersView(CreateUserView createUserView, ListUsersView listUsersView)
+    public ManageUsersView(CreateUserView createUserView, ListUsersView listUsersView, SingleUserView singleUserView)
     {
         this.createUserView = createUserView;
         this.listUsersView = listUsersView;
+        this.singleUserView = singleUserView;
     }
 
     public async Task ShowManageUserAsync()
@@ -39,7 +41,7 @@ public class ManageUsersView
                     break;
                 
                 case "single":
-                    //await singlePostView.GetSinglePost();
+                    await singleUserView.SingleUserAsync();
                     break;
                 case "update":
                     //await updatePostView.UpdatePostAsync();
