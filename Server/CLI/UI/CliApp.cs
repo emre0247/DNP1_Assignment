@@ -48,8 +48,23 @@ public class CliApp
                 case "post":
                     await ManagePostsAsync();
                     break;
+                
+                case "comment":
+                    break;
+                
+                case "user":
+                    await ManageUsersAsync();
+                    break;
             }
         }
+    }
+
+    private async Task ManageUsersAsync()
+    {
+        CreateUserView createUserView = new CreateUserView(userRepository);
+        ListUsersView listUsersView = new ListUsersView(userRepository);
+        ManageUsersView manageUsersView = new ManageUsersView(createUserView, listUsersView);
+        await manageUsersView.ShowManageUserAsync();
     }
 
     private async Task ManagePostsAsync()

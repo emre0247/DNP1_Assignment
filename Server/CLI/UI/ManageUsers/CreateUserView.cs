@@ -12,37 +12,52 @@ public class CreateUserView
         this.userRepository = userRepository;
     }
     
-    public async Task AddUserAsync(string name, string password)
+    public async Task AddUserAsync()
     {
-        // Verify its not empty
-        if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(password))
-        {
-            Console.WriteLine("Name and password cannot be empty!");
-            return;
-        }
-        
-        while (userRepository.GetMany().Any(x => x.Username == name))
-        {
-            Console.WriteLine("Username already exists!");
-            Console.WriteLine("Please enter a different username!");
-            name = Console.ReadLine();
+        Console.WriteLine("Adding new user");
+        Console.WriteLine("----------------");
+        string name = null;
+        string password = null;
 
-            if (string.IsNullOrWhiteSpace(name))
+        while (string.IsNullOrWhiteSpace(name) || string.IsNullOrEmpty(name))
+        {
+            Console.WriteLine("Please enter a username: ");
+            name = Console.ReadLine();
+            if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(name) )
             {
-                Console.WriteLine("Username cannot be empty!");
+                Console.WriteLine("Please enter a valid username");
+            }
+            
+            while (userRepository.GetMany().Any(x => x.Username == name))
+            {
+                Console.WriteLine("Username already exists!");
                 Console.WriteLine("Please enter a different username!");
+                name = Console.ReadLine();
+            }
+        }
+
+        while (string.IsNullOrWhiteSpace(password) || string.IsNullOrEmpty(password))
+        {
+            Console.WriteLine("Please enter a password: ");
+            password = Console.ReadLine();
+
+            if (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(password))
+            {
+                Console.WriteLine("Please enter a valid password");
             }
         }
         
+       
+        
         // We create the user
-        var user = new User
+        User user = new User
         {
             Username = name,
             Password = password,
         };
         
         User createdUser = await userRepository.AddAsync(user);
-        Console.WriteLine($"User {createdUser.Username} created with id {createdUser.Id}");
+        Console.WriteLine($"User {createdUser.Username} created with password {createdUser.Password} and id {createdUser.Id}");
         
     }
 }

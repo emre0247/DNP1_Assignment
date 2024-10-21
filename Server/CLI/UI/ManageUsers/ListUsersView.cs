@@ -14,8 +14,7 @@ public class ListUsersView
     public void ListUsers()
     {
         var users = userRepository.GetMany();
-
-
+        
         if (!users.Any())
         {
             Console.WriteLine("There are no users");
