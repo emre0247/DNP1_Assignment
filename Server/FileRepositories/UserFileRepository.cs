@@ -87,4 +87,11 @@ public class UserFileRepository : IUserRepository
         return users.AsQueryable();
         
     }
+    
+    public async Task<User?> FindByUserNameAsync(string username)
+    {
+        string userAsJson = await File.ReadAllTextAsync(filePath);
+        List<User> users = JsonSerializer.Deserialize<List<User>>(userAsJson)!;
+        return users.SingleOrDefault(u => u.Username == username);
+    }
 }
