@@ -38,16 +38,78 @@ public class UserController : ControllerBase
                 Username = created.Username
             };
             
-            return Created($"/Users/{dto.Id}", created);
+            return Created($"/Users/{dto.Id}", dto);
         }
         catch (InvalidOperationException e)
         {
             Console.WriteLine(e);
-            return StatusCode(400, e.Message);
+            return BadRequest(new{message = e.Message});
+        }
+    }
+    
+    // Method to get specific User with id
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<UserDTO>> GetUserById(int id)
+    {
+        try
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+       
+
+            UserDTO dto = new UserDTO
+            {
+                Id = user.Id,
+                Username = user.Username,
+            };
+            return Ok(dto);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return NotFound("User not found");
         }
         
-        
+    }
+    
+    // Method to delete user based on Id
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult<UserDTO>> DeleteUser(int id)
+    {
+        try
+        {
+            await _userRepository.DeleteAsync(id);
+            return Ok("User deleted");
+            
+        }
+        catch (InvalidOperationException e)
+        {
+           return NotFound(new{message = e.Message});
+        }
+    }
 
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> UpdateUser([FromBody] CreateUserDTO request, int id)
+    {
+        var existingUser = await _userRepository.GetByIdAsync(id);
+
+        
+        if (existingUser == null)
+        {
+            return NotFound();
+        }
+        
+        existingUser.Username = request.Username;
+        existingUser.Password = request.Password;
+        await _userRepository.UpdateAsync(existingUser);
+
+        UserDTO dto = new UserDTO
+        {
+            Id = existingUser.Id,
+            Username = existingUser.Username,
+        };
+        
+        return dto is not null ? Ok(dto) : BadRequest("User not found");
+        
     }
     
     
