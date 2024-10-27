@@ -83,10 +83,11 @@ public class UserController : ControllerBase
         }
         catch (InvalidOperationException e)
         {
-           return NotFound(new{message = e.Message});
+           return NotFound(e.Message);
         }
     }
 
+    // Method to update a user based on Id
     [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdateUser([FromBody] CreateUserDTO request, int id)
     {
@@ -112,6 +113,26 @@ public class UserController : ControllerBase
         
     }
     
+    // Method to get user based on string
+    [HttpGet()]
+    public async Task<ActionResult<List<UserDTO>>> GetUsers([FromQuery] string? username)
+    {
+        var users = _userRepository.GetMany();
+
+        if (!string.IsNullOrEmpty(username))
+        {
+            users = users.Where(u => u.Username.Contains(username, StringComparison.OrdinalIgnoreCase));
+        }
+
+        var userDto = users.Select(user => new UserDTO
+        {
+            Id = user.Id,
+            Username = user.Username,
+        }).ToList();
+
+        return Ok(userDto);
+    }
+        
     
     private async Task VerifyUserNameIsAvailableAsync(string userName)
     {
