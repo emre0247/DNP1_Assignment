@@ -114,7 +114,7 @@ public class UserController : ControllerBase
     }
     
     // Method to get user based on string
-    [HttpGet()]
+    [HttpGet]
     public async Task<ActionResult<List<UserDTO>>> GetUsers([FromQuery] string? username)
     {
         var users = _userRepository.GetMany();
