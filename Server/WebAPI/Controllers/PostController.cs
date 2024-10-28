@@ -67,4 +67,63 @@ public class PostController : ControllerBase
         return postDto is not null ? Ok(postDto) : BadRequest("No matching posts found");
     }
 
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<Post>> GetPost(int id)
+    {
+
+        try
+        {
+            var post = await postRepository.GetSingleAsync(id);
+
+            PostDTO dto = new PostDTO
+            {
+                Id = post.Id,
+                Body = post.Body,
+                Title = post.Title,
+                UserId = post.UserId
+            };
+            return Ok(dto);
+        }
+        catch (Exception e)
+        {
+            return StatusCode(500, e.Message);
+        }
+    }
+    
+    // Method to delete user based on Id
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult<Post>> DeletePost(int id)
+    {
+        await postRepository.DeleteAsync(id);
+        return Ok("Post deleted");
+    }
+    
+    // Method to update existing post
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult<Post>> UpdatePost(int id, [FromBody] CreatePostDTO request)
+    {
+        var existingPost = await postRepository.GetSingleAsync(id);
+
+        if (existingPost is null)
+        {
+            return NotFound();
+        }
+        
+        existingPost.Body = request.Body;
+        existingPost.Title = request.Title;
+        existingPost.UserId = request.UserId;
+        
+        await postRepository.UpdateAsync(existingPost);
+
+        PostDTO dto = new PostDTO()
+        {
+            Id = existingPost.Id,
+            Body = existingPost.Body,
+            Title = existingPost.Title,
+            UserId = existingPost.UserId,
+        };
+
+        return Ok(dto);
+    }
+
 }
