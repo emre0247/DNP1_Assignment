@@ -40,7 +40,7 @@ public class PostController : ControllerBase
         return dto is not null ? Ok(dto) : BadRequest("Try again");
     }
 
-    // Method to get posts based on 
+    // Method to get posts based on title or userId
     [HttpGet]
     public async Task<ActionResult<List<Post>>> GetPosts([FromQuery] string? title, [FromQuery] int? userId)
     {
