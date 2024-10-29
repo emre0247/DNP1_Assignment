@@ -94,7 +94,7 @@ public class CommentController : ControllerBase
     
     // Method to update existing comment
     [HttpPut("{id:int}")]
-    public async Task<ActionResult<Comment>> UpdateComment(int id, [FromBody] CreateCommentDTO request)
+    public async Task<ActionResult<CommentDTO>> UpdateComment(int id, [FromBody] CreateCommentDTO request)
     {
         var existingComment = await commentRepository.GetSingleAsync(id);
         if (existingComment is null)
