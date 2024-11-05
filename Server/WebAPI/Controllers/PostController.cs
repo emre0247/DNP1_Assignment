@@ -18,7 +18,7 @@ public class PostController : ControllerBase
 
     // Method to create a new post
     [HttpPost]
-    public async Task<ActionResult<Post>> AddPost([FromBody] CreatePostDTO request)
+    public async Task<ActionResult<PostDTO>> AddPost([FromBody] CreatePostDTO request)
     {
         Post post = new()
         {
@@ -42,7 +42,7 @@ public class PostController : ControllerBase
 
     // Method to get posts based on title or userId
     [HttpGet]
-    public async Task<ActionResult<List<Post>>> GetPosts([FromQuery] string? title, [FromQuery] int? userId)
+    public async Task<ActionResult<List<PostDTO>>> GetPosts([FromQuery] string? title, [FromQuery] int? userId)
     {
         var posts = postRepository.GetMany();
 
@@ -68,7 +68,7 @@ public class PostController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<Post>> GetPost(int id)
+    public async Task<ActionResult<PostDTO>> GetPost(int id)
     {
 
         try
@@ -92,7 +92,7 @@ public class PostController : ControllerBase
     
     // Method to delete user based on Id
     [HttpDelete("{id:int}")]
-    public async Task<ActionResult<Post>> DeletePost(int id)
+    public async Task<ActionResult<PostDTO>> DeletePost(int id)
     {
         await postRepository.DeleteAsync(id);
         return Ok("Post deleted");
@@ -100,7 +100,7 @@ public class PostController : ControllerBase
     
     // Method to update existing post
     [HttpPut("{id:int}")]
-    public async Task<ActionResult<Post>> UpdatePost(int id, [FromBody] CreatePostDTO request)
+    public async Task<ActionResult<PostDTO>> UpdatePost(int id, [FromBody] CreatePostDTO request)
     {
         var existingPost = await postRepository.GetSingleAsync(id);
 
