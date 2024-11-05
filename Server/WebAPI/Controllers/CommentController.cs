@@ -19,7 +19,7 @@ public class CommentController : ControllerBase
     
     //Method to create a new comment
     [HttpPost]
-    public async Task<ActionResult<Comment>> CreateComment([FromBody]CreateCommentDTO request)
+    public async Task<ActionResult<CommentDTO>> CreateComment([FromBody]CreateCommentDTO request)
     {
         Comment comment = new()
         {
@@ -43,7 +43,7 @@ public class CommentController : ControllerBase
     
     // Method to get comments based on userid or Post id
     [HttpGet]
-    public async Task<ActionResult<List<Comment>>> GetComments([FromQuery] int? userId, [FromQuery] int? postId)
+    public async Task<ActionResult<List<CommentDTO>>> GetComments([FromQuery] int? userId, [FromQuery] int? postId)
     {
         var comments = commentRepository.GetMany();
         if (userId.HasValue)
@@ -69,7 +69,7 @@ public class CommentController : ControllerBase
     
     // Method to get comment based on its id
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<Comment>> GetComment(int id)
+    public async Task<ActionResult<CommentDTO>> GetComment(int id)
     {
         var comment = await commentRepository.GetSingleAsync(id);
 
@@ -86,7 +86,7 @@ public class CommentController : ControllerBase
     
     // Method to delete comment based on Id
     [HttpDelete("{id:int}")]
-    public async Task<ActionResult<Comment>> DeleteComment(int id)
+    public async Task<ActionResult<CommentDTO>> DeleteComment(int id)
     {
         await commentRepository.DeleteAsync(id);
         return Ok("Comment deleted");
