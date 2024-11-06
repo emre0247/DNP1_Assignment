@@ -1,0 +1,36 @@
+@page "/addUser"
+@using BlazorApp.Services
+@using DTOs
+@inject IUserService HttpUserService
+
+<PageTitle>Register User</PageTitle>
+
+<h1>Register User</h1>
+
+<EditForm Model="@newUser" OnValidSubmit="HandleAdd">
+    <div>
+        <label>Username:</label>
+        <InputText @bind-Value="newUser.Username"/>
+    </div>
+    <div>
+        <label>Password:</label>
+        <InputText @bind-Value="newUser.Password" type="password"/>
+    </div>
+    <button type="submit">Create</button>
+</EditForm>
+
+@if (userDto != null)
+{
+    <p>Created User: ID @userDto.Id, Username @userDto.Username</p>
+}
+
+@code
+{
+    private CreateUserDTO newUser = new CreateUserDTO();
+    private UserDTO? userDto;
+
+    private async Task HandleAdd()
+    {
+        userDto = await HttpUserService.addUserAsync(newUser);
+    }
+}
