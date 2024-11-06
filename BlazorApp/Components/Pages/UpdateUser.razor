@@ -1,0 +1,38 @@
+@page "/updateUser"
+@inject IUserService HttpUserService
+@using BlazorApp.Services
+@using DTOs
+
+<PageTitle>Update User</PageTitle>
+
+<h1>Update existing user</h1>
+
+<EditForm Model="newUser" OnValidSubmit="HandleUpdate">
+    <div>
+        <label>ID: </label>
+        <InputNumber @bind-Value="userToFind"/>
+    </div>
+    <div>
+        <label>Username:</label>
+        <InputText @bind-Value="newUser.Username"/>
+    </div>
+    <div>
+        <label>Password</label>
+        <InputText @bind-Value="newUser.Password"/>
+    </div>
+    <button type="submit">Update</button>
+</EditForm>
+
+@code
+{
+    private CreateUserDTO newUser = new CreateUserDTO();
+
+    private int userToFind;
+
+    private UserDTO userDto;
+
+    private async Task HandleUpdate()
+    {
+        userDto = await HttpUserService.updateUserAsync(userToFind, newUser);
+    }
+}
