@@ -1,0 +1,40 @@
+@page "/addPost"
+@using BlazorApp.Services
+@using DTOs
+@inject IPostService HttpPostService
+
+<PageTitle>Add Post</PageTitle>
+
+<h1>Add a Post</h1>
+
+<EditForm Model="@newPost" OnValidSubmit="HandleAdd">
+    <div>
+        <label>Title:</label>
+        <InputText @bind-Value="newPost.Title"/>
+    </div>
+    <div>
+        <label>Body:</label>
+        <InputText @bind-Value="@newPost.Body"/>
+    </div>
+    <button type="submit">Create</button>
+</EditForm>
+
+@if (postDto != null)
+{
+    <p>Post created sucessfully. Title: @postDto.Title, Body: @postDto.Body, UserId: @postDto.UserId</p>
+}
+
+@code
+{
+    private CreatePostDTO newPost = new CreatePostDTO
+    {
+        UserId = 5
+    };
+
+    private PostDTO? postDto;
+
+    private async Task HandleAdd()
+    {
+        postDto = await HttpPostService.addPostAsync(newPost);
+    }
+}
