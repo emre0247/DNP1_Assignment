@@ -24,7 +24,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            await VerifyUserNameIsAvailableAsync(request.Username);
+            await _userRepository.VerifyUserNameIsAvailableAsync(request.Username);
             User user = new User
             {
                 Username = request.Username,
@@ -134,14 +134,6 @@ public class UserController : ControllerBase
     }
         
     
-    private async Task VerifyUserNameIsAvailableAsync(string userName)
-    {
-        var existingUser = await _userRepository.FindByUserNameAsync(userName);
-        if (existingUser != null)
-        {
-            throw new InvalidOperationException("Username is already taken.");
-        }
-    }
 
     
     

@@ -10,4 +10,5 @@ public interface IUserRepository
     Task<User> GetByIdAsync(int id);
     IQueryable<User> GetMany();
     Task<User?> FindByUserNameAsync(string userName);
+    Task VerifyUserNameIsAvailableAsync(string userName);
 }

@@ -94,4 +94,17 @@ public class UserFileRepository : IUserRepository
         List<User> users = JsonSerializer.Deserialize<List<User>>(userAsJson)!;
         return users.SingleOrDefault(u => u.Username == username);
     }
+
+    public async Task VerifyUserNameIsAvailableAsync(string userName)
+    {
+        if (string.IsNullOrWhiteSpace(userName))
+        {
+            throw new ArgumentException("Username cannot be empty or whitespace.", nameof(userName));
+        }
+        var existingUser = await FindByUserNameAsync(userName);
+        if (existingUser != null)
+        {
+            throw new InvalidOperationException($"Username \"{userName}\" is already taken.");
+        }
+    }
 }
