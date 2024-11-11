@@ -40,10 +40,10 @@ public class UserController : ControllerBase
             
             return Created($"/Users/{dto.Id}", dto);
         }
-        catch (InvalidOperationException e)
+        catch (Exception e)
         {
             Console.WriteLine(e);
-            return BadRequest(new{message = e.Message});
+            return BadRequest(e.Message);
         }
     }
     
@@ -66,7 +66,7 @@ public class UserController : ControllerBase
         catch (Exception e)
         {
             Console.WriteLine(e);
-            return NotFound("User not found");
+            return NotFound(e.Message);
         }
         
     }
@@ -79,59 +79,78 @@ public class UserController : ControllerBase
         {
             await _userRepository.DeleteAsync(id);
             return Ok("User deleted");
-            
         }
-        catch (InvalidOperationException e)
+        catch (Exception e)
         {
            return NotFound(e.Message);
         }
     }
 
     // Method to update a user based on Id
-    [HttpPut("{id:int}")]
+    [HttpPut("{id:int}")] 
     public async Task<IActionResult> UpdateUser([FromBody] CreateUserDTO request, int id)
     {
-        var existingUser = await _userRepository.GetByIdAsync(id);
-
-        
-        if (existingUser == null)
+        try
         {
-            return NotFound();
+            var existingUser = await _userRepository.GetByIdAsync(id);
+
+            if (existingUser == null)
+            {
+                return NotFound("User not found");
+            }
+
+            existingUser.Username = request.Username;
+            existingUser.Password = request.Password;
+
+            await _userRepository.UpdateAsync(existingUser);
+
+            UserDTO dto = new UserDTO
+            {
+                Id = existingUser.Id,
+                Username = existingUser.Username,
+            };
+
+            return Ok(dto);
         }
-        
-        existingUser.Username = request.Username;
-        existingUser.Password = request.Password;
-        await _userRepository.UpdateAsync(existingUser);
-
-        UserDTO dto = new UserDTO
+        catch (InvalidOperationException ex)
         {
-            Id = existingUser.Id,
-            Username = existingUser.Username,
-        };
-        
-        return dto is not null ? Ok(dto) : BadRequest("User not found");
-        
+            return NotFound(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An unexpected error occurred: {ex.Message}");
+        }
     }
+
+
     
-    // Method to get user based on string
+    // Method to get users based on an optional username filter
     [HttpGet]
     public async Task<ActionResult<List<UserDTO>>> GetUsers([FromQuery] string? username)
     {
-        var users = _userRepository.GetMany();
-
-        if (!string.IsNullOrEmpty(username))
+        try
         {
-            users = users.Where(u => u.Username.Contains(username, StringComparison.OrdinalIgnoreCase));
+            var users = _userRepository.GetMany();
+
+            if (!string.IsNullOrEmpty(username))
+            {
+                users = users.Where(u => u.Username.Contains(username, StringComparison.OrdinalIgnoreCase));
+            }
+
+            var userDto = users.Select(user => new UserDTO
+            {
+                Id = user.Id,
+                Username = user.Username,
+            }).ToList();
+
+            return Ok(userDto);
         }
-
-        var userDto = users.Select(user => new UserDTO
+        catch (Exception ex)
         {
-            Id = user.Id,
-            Username = user.Username,
-        }).ToList();
-
-        return Ok(userDto);
+            return StatusCode(500, $"An error occurred while retrieving users: {ex.Message}");
+        }
     }
+
         
     
 
