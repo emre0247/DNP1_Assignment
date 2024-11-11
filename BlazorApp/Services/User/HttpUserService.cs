@@ -14,61 +14,106 @@ public class HttpUserService : IUserService
     
     public async Task<UserDTO> addUserAsync(CreateUserDTO request)
     {
-        HttpResponseMessage httpResponse = await httpClient.PostAsJsonAsync("/users", request);
-        string response = await httpResponse.Content.ReadAsStringAsync();
-        if (!httpResponse.IsSuccessStatusCode)
+        try
         {
-            throw new Exception(response);
+            HttpResponseMessage httpResponse = await httpClient.PostAsJsonAsync("/users", request);
+            string response = await httpResponse.Content.ReadAsStringAsync();
+            if (!httpResponse.IsSuccessStatusCode)
+            {
+                throw new Exception(response);
+            }
+            return JsonSerializer.Deserialize<UserDTO>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
-        return JsonSerializer.Deserialize<UserDTO>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        catch (HttpRequestException ex)
+        {
+            throw new Exception($"HTTP request error: {ex.Message}", ex);
+
+        }
+        catch (JsonException ex)
+        {
+            throw new Exception("Error deserializing the response.", ex);
+        }
         
     }
 
     public async Task<UserDTO> updateUserAsync(int userId, CreateUserDTO request)
     {
-        HttpResponseMessage httpResponse = await httpClient.PutAsJsonAsync($"/users/{userId}", request);
-        string response = await httpResponse.Content.ReadAsStringAsync();
-        if (!httpResponse.IsSuccessStatusCode)
+        try
         {
-            throw new Exception(response);
+            HttpResponseMessage httpResponse = await httpClient.PutAsJsonAsync($"/users/{userId}", request);
+            string response = await httpResponse.Content.ReadAsStringAsync();
+            if (!httpResponse.IsSuccessStatusCode)
+            {
+                throw new Exception(response);
+            }
+            return JsonSerializer.Deserialize<UserDTO>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
-        return JsonSerializer.Deserialize<UserDTO>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        catch (HttpRequestException ex)
+        {
+            throw new Exception($"HTTP request error: {ex.Message}", ex);
+        }
+        catch (JsonException ex)
+        {
+            throw new Exception("Error deserializing the response.", ex);
+        }
     }
 
     public async Task<UserDTO> getUserByIdAsync(int userId)
     {
-        var user = await httpClient.GetFromJsonAsync<UserDTO>($"/users/{userId}");
-
-        return user;
+        try
+        {
+            var user = await httpClient.GetFromJsonAsync<UserDTO>($"/users/{userId}");
+            return user;
+        }
+        catch (HttpRequestException ex)
+        {
+            throw new Exception($"HTTP request error: {ex.Message}", ex);
+        }
+        catch (JsonException ex)
+        {
+            throw new Exception("Error deserializing the response.", ex);
+        }
     }
 
     public async Task deleteUserAsync(int userId)
     {
-        HttpResponseMessage httpResponse = await httpClient.DeleteAsync($"users/{userId}");
-        string response = await httpResponse.Content.ReadAsStringAsync();
-        if (!httpResponse.IsSuccessStatusCode)
+        try
         {
-            throw new Exception(response);
+            HttpResponseMessage httpResponse = await httpClient.DeleteAsync($"users/{userId}");
+            string response = await httpResponse.Content.ReadAsStringAsync();
+            if (!httpResponse.IsSuccessStatusCode)
+            {
+                throw new Exception(response);
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            throw new Exception($"HTTP request error: {ex.Message}", ex);
         }
     }
 
     public async Task<List<UserDTO>> getAllUsers(string? username)
     {
-        var uri = string.IsNullOrEmpty(username) ? "/users" : $"/users?username={username}";
-        
-        HttpResponseMessage httpResponse = await httpClient.GetAsync(uri);
-        
-        string response = await httpResponse.Content.ReadAsStringAsync();
+        try
+        {
+            var uri = string.IsNullOrEmpty(username) ? "/users" : $"/users?username={username}";
+            HttpResponseMessage httpResponse = await httpClient.GetAsync(uri);
+            string response = await httpResponse.Content.ReadAsStringAsync();
 
-        if (httpResponse.IsSuccessStatusCode)
-        {
-            List<UserDTO>? users = JsonSerializer.Deserialize<List<UserDTO>>(response,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            return users;
+            if (!httpResponse.IsSuccessStatusCode)
+            {
+                throw new HttpRequestException($"Error retrieving users: {response}");
+            }
+            List<UserDTO>? users = JsonSerializer.Deserialize<List<UserDTO>>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            return users ?? new List<UserDTO>();
         }
-        else
+        catch (HttpRequestException ex)
         {
-            throw new Exception(response);
+            throw new Exception($"HTTP request error: {ex.Message}", ex);
+        }
+        catch (JsonException ex)
+        {
+            throw new Exception("Error deserializing the response.", ex);
         }
         
     }
