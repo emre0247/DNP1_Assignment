@@ -1,1 +1,1 @@
-[{"Id":1,"Title":"Testing title 1","Body":"Bla bla bla ","UserId":4},{"Id":2,"Title":"Posting title 1","Body":"asdfafasd","UserId":5}]
+[{"Id":1,"Title":"Testing title 1","Body":"Bla bla bla ","UserId":4},{"Id":2,"Title":"Posting title 1","Body":"asdfafasd","UserId":5},{"Id":3,"Title":"tester fra blazor","Body":"blalblalalalala","UserId":5},{"Id":4,"Title":"Blalala","Body":"lalalala","UserId":5}]

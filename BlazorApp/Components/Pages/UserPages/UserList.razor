@@ -1,0 +1,54 @@
+@page "/userList"
+@using BlazorApp.Services
+@using DTOs
+@inject IUserService HttpUserService
+@rendermode InteractiveServer
+
+<PageTitle>List of All Users</PageTitle>
+
+<h1>List of All Users</h1>
+
+
+<div>
+    <label>Search for specific username:</label>
+    <InputText @bind-Value="searchParameter" placeholder="Search for Users"/>
+    <button type="submit" @onclick="HandleList">Search</button>
+</div>
+
+@if (users.Count > 0)
+{
+    <ul>
+        @foreach (var user in users)
+        {
+            <li>
+                <p>Username: @user.Username, ID: @user.Id</p>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No user found</p>
+}
+
+
+
+@code
+{
+    private List<UserDTO> users = new List<UserDTO>();
+    private string? searchParameter = string.Empty;
+
+   
+    
+    private async Task HandleList()
+    {
+        users = await HttpUserService.getAllUsers(searchParameter);
+    }
+    
+    //Load the users initially
+    protected override async Task OnInitializedAsync()
+    {
+        await HandleList();
+    }
+    
+}

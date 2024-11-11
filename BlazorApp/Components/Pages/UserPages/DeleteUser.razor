@@ -1,0 +1,38 @@
+@page "/UserPages/deleteUser"
+@using BlazorApp.Services
+@using DTOs
+@inject IUserService HttpUserService
+
+<PageTitle>Delete User</PageTitle>
+
+<h1>Delete a User</h1>
+
+<label>Enter UserID:</label>
+<input @bind="userId" placeholder="UserID...."/>
+<button style="color: red" @onclick="HandleUserDeletetion">Delete</button>
+
+<p>@message</p>
+
+@code
+{
+    private int userId;
+
+    private string message = string.Empty;
+
+    public async Task HandleUserDeletetion()
+    {
+        var user = await HttpUserService.getUserByIdAsync(userId);
+        if (user != null)
+        {
+            await HttpUserService.deleteUserAsync(userId);
+            message = $"Succesfully Deleted User With ID: {userId}";
+        }
+        else
+        {
+            message = $"No User Found With ID: {userId}";
+        }
+    }
+
+
+
+}
