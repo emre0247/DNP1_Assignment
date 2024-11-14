@@ -19,7 +19,11 @@
     <button type="submit">Create</button>
 </EditForm>
 
-@if (userDto != null)
+@if (!string.IsNullOrWhiteSpace(errorMessage))
+{
+    <p style="color: red">@errorMessage</p>
+}
+else if (userDto != null)
 {
     <p>Created, Username @userDto.Username, User: ID @userDto.Id</p>
 }
@@ -28,9 +32,20 @@
 {
     private CreateUserDTO newUser = new CreateUserDTO();
     private UserDTO? userDto;
+    private string errorMessage = string.Empty;
 
     private async Task HandleAdd()
     {
-        userDto = await HttpUserService.addUserAsync(newUser);
+        try
+        {
+            userDto = await HttpUserService.addUserAsync(newUser);
+            errorMessage = string.Empty;  // Reset error message if user is created successfully
+
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            errorMessage = e.Message;
+        }
     }
 }

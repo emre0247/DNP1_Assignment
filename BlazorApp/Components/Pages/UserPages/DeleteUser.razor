@@ -8,28 +8,42 @@
 <h1>Delete a User</h1>
 
 <label>Enter UserID:</label>
-<input @bind="userId" placeholder="UserID...."/>
+<input @bind="userId" placeholder="UserID..."/>
 <button style="color: red" @onclick="HandleUserDeletetion">Delete</button>
 
-<p>@message</p>
+
+@if (!string.IsNullOrWhiteSpace(errorMessage))
+{
+    <p style="color: red">@errorMessage</p>
+}
+else if (!string.IsNullOrWhiteSpace(successMessage))
+{
+    <p style="color: green">@successMessage</p>
+}
 
 @code
 {
     private int userId;
 
-    private string message = string.Empty;
+    private string errorMessage = string.Empty;
+    private string successMessage = string.Empty;
 
     public async Task HandleUserDeletetion()
     {
-        var user = await HttpUserService.getUserByIdAsync(userId);
-        if (user != null)
+        try
         {
-            await HttpUserService.deleteUserAsync(userId);
-            message = $"Succesfully Deleted User With ID: {userId}";
+            var user = await HttpUserService.getUserByIdAsync(userId);
+            if (user != null)
+            {
+                await HttpUserService.deleteUserAsync(userId);
+                successMessage = $"Succesfully Deleted User With ID: {userId}";
+                errorMessage = string.Empty;
+            }
         }
-        else
+        catch (Exception e)
         {
-            message = $"No User Found With ID: {userId}";
+            errorMessage = e.Message;
+            successMessage = string.Empty;
         }
     }
 
