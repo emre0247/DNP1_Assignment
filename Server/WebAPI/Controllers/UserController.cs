@@ -66,7 +66,7 @@ public class UserController : ControllerBase
         catch (Exception e)
         {
             Console.WriteLine(e);
-            return NotFound(e.Message);
+            return StatusCode(500, e.Message);
         }
         
     }
@@ -80,9 +80,13 @@ public class UserController : ControllerBase
             await _userRepository.DeleteAsync(id);
             return Ok("User deleted");
         }
+        catch (InvalidOperationException e)
+        {
+            return NotFound(new { message = e.Message });
+        }
         catch (Exception e)
         {
-           return NotFound(e.Message);
+           return StatusCode(500, new { message = $"An unexpected error occurred: {e.Message}" });
         }
     }
 
