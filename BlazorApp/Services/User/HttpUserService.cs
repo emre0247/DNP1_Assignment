@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text.Json;
 using DTOs;
 
@@ -60,35 +61,25 @@ public class HttpUserService : IUserService
 
     public async Task<UserDTO> getUserByIdAsync(int userId)
     {
-        try
-        {
-            var user = await httpClient.GetFromJsonAsync<UserDTO>($"/users/{userId}");
-            return user;
-        }
-        catch (HttpRequestException ex)
-        {
-            throw new Exception($"HTTP request error: {ex.Message}", ex);
-        }
-        catch (JsonException ex)
-        {
-            throw new Exception("Error deserializing the response.", ex);
-        }
-    }
-
-    public async Task deleteUserAsync(int userId)
-    {
-        try
-        {
-            HttpResponseMessage httpResponse = await httpClient.DeleteAsync($"users/{userId}");
+            HttpResponseMessage httpResponse = await httpClient.GetAsync($"/users/{userId}");
             string response = await httpResponse.Content.ReadAsStringAsync();
             if (!httpResponse.IsSuccessStatusCode)
             {
                 throw new Exception(response);
             }
-        }
-        catch (HttpRequestException ex)
+            return JsonSerializer.Deserialize<UserDTO>(response, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        
+    }
+
+    public async Task deleteUserAsync(int userId)
+    {
+        
+        HttpResponseMessage httpResponse = await httpClient.DeleteAsync($"users/{userId}");
+        
+        if (!httpResponse.IsSuccessStatusCode)
         {
-            throw new Exception($"HTTP request error: {ex.Message}", ex);
+            string response = await httpResponse.Content.ReadAsStringAsync();
+            throw new Exception(response);
         }
     }
 

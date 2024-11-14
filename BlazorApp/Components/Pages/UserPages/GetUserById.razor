@@ -1,1 +1,48 @@
 @page "/UserPages/getUserById"
+@using BlazorApp.Services
+@using DTOs
+@inject IUserService HttpUserService
+
+<PageTitle>Get User By ID</PageTitle>
+
+<h1>Get User By ID</h1>
+
+<div>
+    <label>Enter UserID:</label>
+    <input @bind="userId" placeholder="UserID..."/>
+    <button @onclick="HandleUserId">Get</button>
+</div>
+@if (!string.IsNullOrWhiteSpace(successMessage))
+{
+    <p style="color: green">@successMessage</p>
+}
+else if (!string.IsNullOrWhiteSpace(errorMessage))
+{
+    <p style="color: red">@errorMessage</p>
+}
+
+
+@code
+{
+    private UserDTO userDto = new UserDTO();
+    private string successMessage;
+    private string errorMessage;
+    private int userId;
+
+    private async Task HandleUserId()
+    {
+        try
+        {
+            userDto = await HttpUserService.getUserByIdAsync(userId);
+            successMessage = $"User with ID {userId} found: {userDto.Username}";
+            errorMessage = string.Empty;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            errorMessage = e.Message;
+            successMessage = string.Empty;
+
+        }
+    }
+}

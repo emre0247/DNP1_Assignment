@@ -11,4 +11,8 @@
       <ProjectReference Include="..\Server\RepositoryContracts\RepositoryContracts.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.0" />
+    </ItemGroup>
+
 </Project>
