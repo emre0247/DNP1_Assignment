@@ -12,35 +12,30 @@ public class AuthController : ControllerBase
     {
         this.userRepository = userRepository;
     }
+  
     [HttpPost("login")]
-    public async Task<ActionResult<UserDTO>> Login([FromQuery] string username, [FromQuery] string password)
+    public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        try
-        {
-            var user = await userRepository.FindByUserNameAsync(username);
-            if (user == null)
-            {
-                return Unauthorized("Invalid username");
-            }
+        var user = await userRepository.FindByUserNameAsync(request.Username);
 
-            if (user.Password != password)
-            {
-                return Unauthorized("Invalid password");
-            }
-
-            UserDTO userDto = new UserDTO
-            {
-                Id = user.Id,
-                Username = user.Username,
-            };
-            return Ok(userDto);
-        }
-        catch (Exception e)
+        if (user == null)
         {
-            Console.WriteLine(e);
-            throw;
+            return Unauthorized("User not found");
         }
-        
-        
+
+        // Valider brugerens password (forudsat at det også er en del af request)
+        if (user.Password != request.Password)
+        {
+            return Unauthorized("Invalid password");
+        }
+        // Konverter brugeren til en DTO (uden følsomme oplysninger) og returner den
+        var userDto = new UserDTO
+        {
+            Id = user.Id,
+            Username = user.Username,
+            // Andre nødvendige felter, men uden password
+        };
+
+        return Ok(userDto);
     }
 }

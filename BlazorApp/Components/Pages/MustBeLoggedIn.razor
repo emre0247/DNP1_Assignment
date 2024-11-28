@@ -1,0 +1,38 @@
+@page "/MustBeLoggedIn"
+@using System.Security.Claims
+@using DTOs
+@attribute [Authorize]
+
+<h3>Must be logged in to view</h3>
+
+<p>You can only access this page, if you are logged in.</p>
+
+<AuthorizeView>
+    <Authorized>
+        <h3>Hello @context.User.Identity.Name</h3>
+        <p>@context.User.Claims.First(claim => claim.Type.Equals(ClaimTypes.Role)).Value</p>
+        <p>
+            Your claims include:
+        </p>
+        <ol>
+            @foreach (Claim claim in context.User.Claims)
+            {
+                <li>
+                    <label>@claim.Type: @claim.Value</label>
+                </li>
+            }
+        </ol>
+    </Authorized>
+    <NotAuthorized>
+        <p>You are not logged in.</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+
+@code {
+    [CascadingParameter] public Task<AuthenticationState> State { get; set; }
+
+    
+   
+   
+}
