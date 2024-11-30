@@ -10,6 +10,11 @@ public class EfcPostRepository : IPostRepository
     
     private readonly AppContext ctx;
 
+    public EfcPostRepository(AppContext ctx)
+    {
+        this.ctx = ctx;
+    }
+
     public async Task<Post> AddAsync(Post post)
     {
         EntityEntry<Post> entityEntry = await ctx.Posts.AddAsync(post);
@@ -21,7 +26,7 @@ public class EfcPostRepository : IPostRepository
     {
         if (!(await ctx.Posts.AnyAsync(p => p.Id == post.Id)))
         {
-            throw new InvalidOperationException("Post with id {post.Id} not found");
+            throw new InvalidOperationException($"Post with id {post.Id} not found");
         }
 
         ctx.Posts.Update(post);

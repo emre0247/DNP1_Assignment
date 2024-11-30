@@ -11,7 +11,7 @@ public class AppContext : DbContext
     
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlite("Data Source=app.db");
+        optionsBuilder.UseSqlite("Data Source=/Users/apogultekin/Library/CloudStorage/OneDrive-ViaUC/Skole_/3 semester/DNP1/DNP1_Assignment/EfcRepositories/app.db");
     }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
